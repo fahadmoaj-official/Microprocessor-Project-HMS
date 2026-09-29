@@ -191,3 +191,27 @@ Healthcare Management System
     ├── Search Medicine
     ├── Check Stock
     └── Medicine Price
+```
+## 🗂️ Here is a simplified flowchart of the system
+
+                     ADMIN
+                      │
+        ┌─────────────┼─────────────┐
+        ↓             ↓             ↓
+     Doctors       Patients    Appointments
+                      │
+                      ↓
+                  Pharmacy
+
+
+### Functional Flow
+
+```text
+Admin Login
+    │
+    └── Main Menu
+          ├── Doctor Management
+          ├── Patient Management
+          ├── Appointment Management
+          └── Pharmacy Management
+```

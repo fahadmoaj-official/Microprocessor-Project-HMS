@@ -39,6 +39,14 @@ welcome3       DB 13,10,'========================================$'
 welcome4       DB 13,10,'Welcome to Healthcare Management System$'
 pressMsg       DB 13,10,'Press any key to continue...$'
 
+adminTitle     DB 13,10,'========================================$'
+adminLogin     DB 13,10,'               ADMIN LOGIN$'
+adminUserPrompt DB 13,10,'Username: $'
+adminPassPrompt DB 13,10,'Password: $'
+adminDenied    DB 13,10,'Access denied! Only authorized admin can enter the panel.$'
+adminUser      DB 'admin'
+adminPass      DB '1234'
+
 mainTitle      DB 13,10,'========================================$'
 mainTitle2     DB 13,10,'              MAIN MENU$'
 mainTitle3     DB 13,10,'========================================$'
@@ -168,6 +176,7 @@ MAIN PROC
     MOV DS,AX
 
     CALL WELCOME_SCREEN
+    CALL ADMIN_LOGIN
 
 MAIN_LOOP:
 
@@ -225,6 +234,77 @@ MAIN ENDP
 ; GENERAL PROCEDURES
 ; ============================================================
 
+ADMIN_LOGIN PROC
+
+    MOV BX,3
+
+ADMIN_LOGIN_TRY:
+
+    LEA DX,adminTitle
+    CALL PRINT_STRING
+
+    LEA DX,adminLogin
+    CALL PRINT_STRING
+
+    LEA DX,adminTitle
+    CALL PRINT_STRING
+
+    CALL NEW_LINE
+
+    LEA DX,adminUserPrompt
+    CALL PRINT_STRING
+    CALL READ_STRING
+
+    MOV CL,5
+    LEA SI,inputBuf+2
+    LEA DI,adminUser
+
+ADMIN_CHECK_USER:
+
+    MOV AL,[SI]
+    CMP AL,[DI]
+    JNE ADMIN_LOGIN_FAIL
+    INC SI
+    INC DI
+    DEC CL
+    JNZ ADMIN_CHECK_USER
+
+    LEA DX,adminPassPrompt
+    CALL PRINT_STRING
+    CALL READ_STRING
+
+    MOV CL,4
+    LEA SI,inputBuf+2
+    LEA DI,adminPass
+
+ADMIN_CHECK_PASS:
+
+    MOV AL,[SI]
+    CMP AL,[DI]
+    JNE ADMIN_LOGIN_FAIL
+    INC SI
+    INC DI
+    DEC CL
+    JNZ ADMIN_CHECK_PASS
+
+    RET
+
+ADMIN_LOGIN_FAIL:
+
+    CALL NEW_LINE
+    LEA DX,adminDenied
+    CALL PRINT_STRING
+    CALL NEW_LINE
+
+    DEC BX
+    JNZ ADMIN_LOGIN_TRY
+
+    MOV AH,4CH
+    INT 21H
+
+ADMIN_LOGIN ENDP
+
+; ------------------------------------------------------------
 WELCOME_SCREEN PROC
 
     LEA DX,welcome1
